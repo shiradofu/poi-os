@@ -1,0 +1,6 @@
+clang
+-fno-stack-protector
+-fshort-wchar
+-nostdinc
+-nostdlib
+-fno-builtin
