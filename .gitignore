@@ -1,3 +1,5 @@
 *.o
 main.efi
+mnt
+disk.img
 .ccls-cache

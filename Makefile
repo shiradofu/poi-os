@@ -1,6 +1,4 @@
-VOLUME=volume
-
-all: hello.efi
+.PHONY: run clean
 
 %.o: %.c
 	clang -target x86_64-pc-win32-coff \
@@ -10,10 +8,8 @@ main.efi: main.o efi.o common.o shell.o
 	lld-link /subsystem:efi_application /entry:efi_main /out:$@ $+
 	rm *.o
 
-.PHONY: copy
-copy:
-	[ -f main.efi ] && cp -f main.efi /Volumes/$(VOLUME)/EFI/BOOT/BOOTX64.EFI
-	diskutil unmount /Volumes/volume/
+run:
+	./qemu.sh
 
 clean:
 	rm -f main.efi *.o
