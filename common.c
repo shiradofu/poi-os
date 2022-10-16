@@ -1,5 +1,7 @@
 #include "efi.h"
 
+#define MAX_STR_BUF 100
+
 void putc(unsigned short c) {
   unsigned short str[2] = L" ";
   str[0] = c;
@@ -13,9 +15,27 @@ unsigned short getc(void) {
   unsigned long long waitidx;
 
   ST->BootServices->WaitForEvent(1, &(ST->ConIn->WaitForKey), &waitidx);
-  while (ST->ConIn->ReadKeyStroke(ST->ConIn, &key))
-    ;
+  while (ST->ConIn->ReadKeyStroke(ST->ConIn, &key)) {}
   return key.UnicodeChar;
+}
+
+void puth(unsigned long long val, unsigned char num_digits) {
+  int i;
+  unsigned short hex_digit;
+  unsigned short str[MAX_STR_BUF];
+
+  for (i = num_digits - 1; i >= 0; i--) {
+    hex_digit = (unsigned short)(val & 0x0f);
+    if (hex_digit < 0xa) {
+      str[i] = L'0' + hex_digit;
+    } else {
+      str[i] = L'A' + (hex_digit - 0xa);
+    }
+    val >>= 4;
+  }
+
+  str[num_digits] = L'\0';
+  puts(str);
 }
 
 unsigned int gets(unsigned short *buf, unsigned int buf_size) {
